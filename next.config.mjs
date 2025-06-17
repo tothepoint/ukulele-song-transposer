@@ -11,6 +11,9 @@ const nextConfig = {
   },
   distDir: 'dist',
   output: 'export',
+  basePath: '/ukulele-song-transposer',
+  assetPrefix: '/ukulele-song-transposer/',
+  trailingSlash: true,
 }
 
 export default nextConfig

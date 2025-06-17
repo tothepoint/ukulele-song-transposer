@@ -26,6 +26,13 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Fix paths
+        run: |
+          cd dist
+          find . -type f -name "*.html" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
+          find . -type f -name "*.js" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
+          find . -type f -name "*.css" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
+
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:

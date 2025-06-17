@@ -26,15 +26,23 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Fix paths
+      - name: Prepare deployment
         run: |
-          cd dist
-          find . -type f -name "*.html" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
-          find . -type f -name "*.js" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
-          find . -type f -name "*.css" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
+          # Create a new directory for deployment
+          mkdir -p deploy
+          # Copy all files from dist to deploy
+          cp -r dist/* deploy/
+          # Ensure _next directory is copied
+          cp -r dist/_next deploy/
+          # Update paths in HTML files
+          find deploy -type f -name "*.html" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
+          # Update paths in JS files
+          find deploy -type f -name "*.js" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
+          # Update paths in CSS files
+          find deploy -type f -name "*.css" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist
+          folder: deploy
           branch: gh-pages

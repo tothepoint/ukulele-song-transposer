@@ -1,0 +1,44 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]  # or your default branch name
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Prepare deployment
+        run: |
+          # Create .nojekyll file to disable Jekyll processing
+          touch dist/.nojekyll
+          # Update paths in HTML files
+          find dist -type f -name "*.html" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
+          # Update paths in JS files
+          find dist -type f -name "*.js" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
+          # Update paths in CSS files
+          find dist -type f -name "*.css" -exec sed -i 's/\/_next\//\/ukulele-song-transposer\/_next\//g' {} +
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
